@@ -1,76 +1,19 @@
 <script>
   import PageImage from '$lib/PageImage.svelte';
   import Lettrine from '$lib/Lettrine.svelte';
+  import { enhance } from '$app/forms';
+  import Header from '$lib/Header.svelte';
+  import Footer from '$lib/Footer.svelte';
   
-  let formData = {
-    firstName: '',
-    lastName: '',
-    email: '',
-    newsletter: false,
-    amount: '10',
-    intentions: ''
-  };
-  
-  let showThankYou = false;
-  let isSubmitting = false;
-  let errorMessage = '';
-  let submissionId = null;
-  
-  async function handleSubmit(event) {
-    event.preventDefault();
-    
-    if (isSubmitting) return;
-    
-    isSubmitting = true;
-    errorMessage = '';
-    
-    try {
-      // Send data to PHP backend
-      const response = await fetch('/api/submit-commission.php', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData)
-      });
-      
-      const result = await response.json();
-      
-      if (response.ok && result.success) {
-        submissionId = result.id;
-        showThankYou = true;
-        
-        // Reset form data
-        formData = {
-          firstName: '',
-          lastName: '',
-          email: '',
-          newsletter: false,
-          amount: '10',
-          intentions: ''
-        };
-        
-      } else {
-        errorMessage = result.error || 'An error occurred while submitting your request.';
-      }
-    } catch (error) {
-      console.error('Submission error:', error);
-      errorMessage = 'Network error. Please check your connection and try again.';
-    } finally {
-      isSubmitting = false;
-    }
-  }
-  
-  function resetForm() {
-    showThankYou = false;
-    submissionId = null;
-    errorMessage = '';
-  }
+  export let form; // This receives data from the server action
 </script>
 
 <svelte:head>
   <title>Purchase - Office of the Dead</title>
+  <meta name="description" content="Purchase masses for the Office of the Dead" />
 </svelte:head>
+
+<Header />
 
 <section class="purchase-hero">
   <PageImage src="/visuals/requiem.jpeg" alt="Souls" />
@@ -125,69 +68,106 @@
     </div>
     
     <div class="commission-form">
-      {#if !showThankYou}
-        {#if errorMessage}
-          <div class="error-message">
-            <strong>Error:</strong> {errorMessage}
-          </div>
-        {/if}
-        
-        <form on:submit={handleSubmit}>
-          <div class="form-group">
-            <label for="firstName">Name <span class="required">(required)</span></label>
-            <div class="name-fields">
-              <input type="text" id="firstName" bind:value={formData.firstName} placeholder="First Name" required>
-              <input type="text" id="lastName" bind:value={formData.lastName} placeholder="Last Name" required>
-            </div>
-          </div>
-          
-          <div class="form-group">
-            <label for="email">Email <span class="required">(required)</span></label>
-            <input type="email" id="email" bind:value={formData.email} required>
-          </div>
-          
-          <div class="form-group checkbox-group">
-            <label>
-              <input type="checkbox" bind:checked={formData.newsletter}>
-              Sign up for news and updates
-            </label>
-          </div>
-          
-          <div class="form-group">
-            <label for="amount">Amount per Office</label>
-            <div class="amount-input">
-              <span class="currency">$</span>
-              <input type="number" id="amount" bind:value={formData.amount} min="10" placeholder="10" step="1">
-            </div>
-          </div>
-          
-          <div class="form-group">
-            <label for="intentions">Intentions</label>
-            <textarea id="intentions" bind:value={formData.intentions} placeholder="[Name, number of offices]" rows="4"></textarea>
-          </div>
-          
-          <button type="submit" class="submit-btn" disabled={isSubmitting}>
-            {isSubmitting ? 'SUBMITTING...' : 'SUBMIT'}
-          </button>
-        </form>
-      {:else}
-        <div class="thank-you-message">
-          <h3>Thank You!</h3>
-          <p>Your prayer commission request has been submitted successfully!</p>
-          {#if submissionId}
-            <p class="submission-id">Request ID: <strong>#{submissionId}</strong></p>
-          {/if}
-          <p>We'll be in touch shortly with payment instructions.</p>
-          <div class="thank-you-icon">✓</div>
-          
-          <button class="new-request-btn" on:click={resetForm}>
-            Submit Another Request
-          </button>
+      {#if form?.success}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+          <strong>Success!</strong> {form.message}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
       {/if}
+      {#if form?.error}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          <strong>Error:</strong> {form.error}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      {/if}
+      <form method="POST" use:enhance>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="firstName" class="form-label">Name <span class="text-danger">(required)</span></label>
+            <input
+              type="text"
+              class="form-control"
+              id="firstName"
+              name="firstName"
+              required
+              value={form?.firstName ?? ''}
+            >
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="lastName" class="form-label">Last Name</label>
+            <input
+              type="text"
+              class="form-control"
+              id="lastName"
+              name="lastName"
+              value={form?.lastName ?? ''}
+            >
+          </div>
+        </div>
+        <div class="mb-3">
+          <label for="email" class="form-label">Email <span class="text-danger">(required)</span></label>
+          <input
+            type="email"
+            class="form-control"
+            id="email"
+            name="email"
+            required
+            value={form?.email ?? ''}
+          >
+        </div>
+        <div class="form-check mb-3">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            id="newsletter"
+            name="newsletter"
+            checked={form?.newsletter ?? false}
+          >
+          <label class="form-check-label" for="newsletter">
+            Sign up for news and updates
+          </label>
+        </div>
+        <div class="mb-3">
+          <label for="amount" class="form-label">Amount per Office</label>
+          <div class="input-group">
+            <span class="input-group-text">$</span>
+            <input
+              type="number"
+              class="form-control"
+              id="amount"
+              name="amount"
+              min="1"
+              step="1"
+              value={form?.amount ?? ''}
+            >
+          </div>
+        </div>
+        <div class="mb-3">
+          <label for="intentions" class="form-label">Intentions</label>
+          <textarea
+            class="form-control"
+            id="intentions"
+            name="intentions"
+            rows="4"
+            placeholder="Please list the names of those for whom you would like masses said..."
+          >{form?.intentions ?? ''}</textarea>
+        </div>
+        <div class="d-grid">
+          <button type="submit" class="btn btn-danger btn-lg">
+            SUBMIT
+          </button>
+        </div>
+      </form>
+      <div class="mt-4">
+        <small class="text-muted">
+          <strong>Note:</strong> This is a request form. You will be contacted with payment instructions and confirmation details.
+        </small>
+      </div>
     </div>
   </div>
 </section>
+
+<Footer />
 
 <style>
   section {
@@ -408,6 +388,52 @@
 
   .new-request-btn:hover {
     background-color: #555;
+  }
+
+  .card {
+    border: none;
+  }
+
+  .card-header {
+    border-bottom: 3px solid #dc3545;
+  }
+
+  .btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+
+  .btn-danger:hover {
+    background-color: #c82333;
+    border-color: #bd2130;
+  }
+
+  .form-label {
+    font-weight: 500;
+    color: #495057;
+  }
+
+  .text-danger {
+    color: #dc3545 !important;
+  }
+
+  .alert {
+    border-radius: 0.5rem;
+  }
+
+  .text-justify {
+    text-align: justify;
+  }
+
+  .display-4 {
+    font-weight: 300;
+  }
+
+  .lead {
+    font-size: 1.25rem;
+    font-weight: 300;
   }
 
   @media (max-width: 768px) {
