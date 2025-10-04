@@ -1,0 +1,24 @@
+{
+	"/": [
+		"src/routes/+layout.server.js",
+		"src/routes/+layout.server.js"
+	],
+	"/about": [
+		"src/routes/+layout.server.js"
+	],
+	"/lauds": [
+		"src/routes/+layout.server.js"
+	],
+	"/matins": [
+		"src/routes/+layout.server.js"
+	],
+	"/preparation": [
+		"src/routes/+layout.server.js"
+	],
+	"/purchase": [
+		"src/routes/+layout.server.js"
+	],
+	"/vespers": [
+		"src/routes/+layout.server.js"
+	]
+}

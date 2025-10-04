@@ -1,0 +1,351 @@
+/* Define local EB Garamond variable fonts */
+@font-face {
+  font-family: 'EB Garamond Local';
+  src: url('/caligraphy/EBGaramond-VariableFont_wght.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'EB Garamond Local';
+  src: url('/caligraphy/EBGaramond-Italic-VariableFont_wght.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: italic;
+}
+
+/* Fallback to static fonts if variable fonts are unsupported */
+@font-face {
+  font-family: 'EB Garamond Local';
+  src: url('/caligraphy/EBGaramond-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'EB Garamond Local';
+  src: url('/caligraphy/EBGaramond-Italic.woff2') format('woff2');
+  font-weight: 400;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'EB Garamond Local';
+  src: url('/caligraphy/EBGaramond-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'EB Garamond Local';
+  src: url('/caligraphy/EBGaramond-MediumItalic.woff2') format('woff2');
+  font-weight: 500;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'EB Garamond Local';
+  src: url('/caligraphy/EBGaramond-SemiBold.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'EB Garamond Local';
+  src: url('/caligraphy/EBGaramond-SemiBoldItalic.woff2') format('woff2');
+  font-weight: 600;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'EB Garamond Local';
+  src: url('/caligraphy/EBGaramond-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'EB Garamond Local';
+  src: url('/caligraphy/EBGaramond-BoldItalic.woff2') format('woff2');
+  font-weight: 700;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'EB Garamond Local';
+  src: url('/caligraphy/EBGaramond-ExtraBold.woff2') format('woff2');
+  font-weight: 800;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'EB Garamond Local';
+  src: url('/caligraphy/EBGaramond-ExtraBoldItalic.woff2') format('woff2');
+  font-weight: 800;
+  font-style: italic;
+}
+
+/* Font for the big title */
+@font-face {
+  font-family: 'Libre Baskerville';
+  src: url('/caligraphy/LibreBaskerville-Bold.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+}
+
+/* Font-face declaration for Lasance Initials */
+@font-face {
+  font-family: 'Lasance Initials';
+  src: url('/caligraphy/LasanceInitials.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Base styles */
+:root {
+  --primary-red: #DC143C;
+  --gold: #d4b038;
+  --black: #000000;
+  --white: #ffffff;
+  --gray-light: #f9f9f9;
+  --gray-medium: #ddd;
+  --gray-dark: #524e4e;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'EB Garamond Local', 'EB Garamond', serif;
+  font-size: 14pt;
+  font-weight: 400;
+  line-height: 1.4;
+  margin: 0 auto;
+  max-width: 900px;
+  padding: 20px;
+  background-color: var(--white);
+  color: var(--black);
+  font-feature-settings: "calt" 1, "liga" 1, "dlig" 1, "pnum" 1, "onum" 1, "ss05" 1, "ss06" 1;
+  text-align: justify;
+}
+
+/* Typography utilities */
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+.text-right { text-align: right; }
+.text-justify { text-align: justify; }
+
+.font-normal { font-weight: normal; }
+.font-medium { font-weight: 500; }
+.font-semibold { font-weight: 600; }
+.font-bold { font-weight: 700; }
+
+.italic { font-style: italic; }
+.smallcaps { font-variant: small-caps; }
+
+/* Color utilities */
+.text-red { color: var(--primary-red); }
+.text-gold { color: var(--gold); }
+.text-white { color: var(--white); }
+.text-black { color: var(--black); }
+
+.bg-red { background-color: var(--primary-red); }
+.bg-gold { background-color: var(--gold); }
+.bg-white { background-color: var(--white); }
+.bg-black { background-color: var(--black); }
+.bg-gray-light { background-color: var(--gray-light); }
+
+/* Liturgical text styles */
+.versicle, .response {
+  color: var(--primary-red);
+}
+
+.hora {
+  font-variant: small-caps;
+  font-size: 1.5em;
+  text-transform: lowercase;
+}
+
+.rubrica, .rubric {
+  color: var(--primary-red);
+}
+
+.rubric.asterisk, .rubric.dagger {
+  color: var(--primary-red);
+}
+
+.red {
+  color: var(--primary-red);
+}
+
+.response-symbol, .versicle-symbol {
+  color: var(--primary-red);
+}
+
+.subtitulus {
+  font-style: italic;
+  font-size: 1em;
+  font-feature-settings: "swsh" 1;
+}
+
+.psalmus {
+  color: var(--primary-red);
+}
+
+.fons {
+  font-style: italic;
+  font-size: 0.8em;
+}
+
+/* Drop cap styles */
+.dropcap:first-letter,
+p.dropcap:first-letter {
+  float: left;
+  font-size: 2.5em;
+  line-height: 0.8em;
+  margin-right: 0.05em;
+  margin-top: 0.1em;
+  color: inherit;
+}
+
+/* Image styles */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 10px auto;
+}
+
+.decorative-image {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 10px auto;
+}
+
+.crucifixion-image {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+/* Layout utilities */
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.section {
+  margin-bottom: 30px;
+}
+
+.section-break {
+  margin: 40px 0;
+  border-bottom: 1px solid var(--gray-medium);
+}
+
+.decorative-break {
+  text-align: center;
+  margin: 40px 0;
+  font-size: 2em;
+  color: var(--primary-red);
+}
+
+/* Center class for section headings */
+.center {
+  text-align: center;
+  margin: 1.5em 0;
+}
+
+.center p {
+  margin: 0;
+}
+
+/* Styling for liturgical content */
+.subtitle, .psalm-title, .section-title, .lesson-title, .prayer-title {
+  text-align: center;
+  margin: 1.5em 0 1em 0;
+  color: var(--primary-red);
+}
+
+.source {
+  text-align: center;
+  font-style: italic;
+  font-size: 0.9em;
+  margin: 0.5em 0;
+}
+
+.page-image-top, .page-image-bottom {
+  text-align: center;
+  margin: 20px 0 30px 0;
+}
+
+/* Prayer selection dropdown styling */
+.prayer-selection {
+  margin: 2em 0;
+  text-align: center;
+}
+
+.prayer-selection label {
+  font-weight: bold;
+  margin-right: 10px;
+  color: var(--primary-red);
+}
+
+.prayer-selection select {
+  padding: 8px 12px;
+  font-size: 1em;
+  font-family: 'EB Garamond Local', serif;
+  border: 2px solid var(--primary-red);
+  border-radius: 4px;
+  background-color: var(--white);
+  color: #333;
+  min-width: 300px;
+}
+
+.prayer-selection select:focus {
+  outline: none;
+  border-color: #B22222;
+  box-shadow: 0 0 5px rgba(139, 0, 0, 0.3);
+}
+
+.prayer-content {
+  margin-top: 2em;
+}
+
+.prayer-option {
+  display: none;
+}
+
+.prayer-option.active {
+  display: block;
+}
+
+/* Math styling */
+.math {
+  color: #1a5276;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  body {
+    padding: 15px;
+    max-width: 100%;
+    font-size: 10pt;
+  }
+  
+  .prayer-selection select {
+    min-width: 250px;
+    font-size: 0.9em;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    padding: 10px;
+    font-size: 9pt;
+  }
+}
