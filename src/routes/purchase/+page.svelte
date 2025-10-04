@@ -12,39 +12,59 @@
   };
   
   let showThankYou = false;
+  let isSubmitting = false;
+  let errorMessage = '';
+  let submissionId = null;
   
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
     
-    const submissionData = {
-      ...formData,
-      timestamp: new Date().toISOString(),
-      type: 'Commission Prayer Request'
-    };
+    if (isSubmitting) return;
     
-    const jsonData = JSON.stringify(submissionData, null, 2);
+    isSubmitting = true;
+    errorMessage = '';
     
-    const subject = encodeURIComponent('New Commission Prayer Request - Office of the Dead');
-    const body = encodeURIComponent(`New commission prayer request received:
-
-${jsonData}
-
-Please process this request and send payment instructions to: ${formData.email}
-
-Full Name: ${formData.firstName} ${formData.lastName}
-Amount per Office: $${formData.amount}
-Newsletter Signup: ${formData.newsletter ? 'Yes' : 'No'}
-Intentions: ${formData.intentions || 'None specified'}
-Submitted: ${new Date(submissionData.timestamp).toLocaleString()}`);
-    
-    const emailAddress = 'enzopde24@gmail.com';
-    const mailtoLink = `mailto:${emailAddress}?subject=${subject}&body=${body}`;
-    
-    showThankYou = true;
-    
-    setTimeout(() => {
-      window.location.href = mailtoLink;
-    }, 1000);
+    try {
+      // Send data to PHP backend
+      const response = await fetch('/api/submit-commission.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+      });
+      
+      const result = await response.json();
+      
+      if (response.ok && result.success) {
+        submissionId = result.id;
+        showThankYou = true;
+        
+        // Reset form data
+        formData = {
+          firstName: '',
+          lastName: '',
+          email: '',
+          newsletter: false,
+          amount: '10',
+          intentions: ''
+        };
+        
+      } else {
+        errorMessage = result.error || 'An error occurred while submitting your request.';
+      }
+    } catch (error) {
+      console.error('Submission error:', error);
+      errorMessage = 'Network error. Please check your connection and try again.';
+    } finally {
+      isSubmitting = false;
+    }
+  }
+  
+  function resetForm() {
+    showThankYou = false;
+    submissionId = null;
+    errorMessage = '';
   }
 </script>
 
@@ -106,6 +126,12 @@ Submitted: ${new Date(submissionData.timestamp).toLocaleString()}`);
     
     <div class="commission-form">
       {#if !showThankYou}
+        {#if errorMessage}
+          <div class="error-message">
+            <strong>Error:</strong> {errorMessage}
+          </div>
+        {/if}
+        
         <form on:submit={handleSubmit}>
           <div class="form-group">
             <label for="firstName">Name <span class="required">(required)</span></label>
@@ -140,13 +166,23 @@ Submitted: ${new Date(submissionData.timestamp).toLocaleString()}`);
             <textarea id="intentions" bind:value={formData.intentions} placeholder="[Name, number of offices]" rows="4"></textarea>
           </div>
           
-          <button type="submit" class="submit-btn">SUBMIT</button>
+          <button type="submit" class="submit-btn" disabled={isSubmitting}>
+            {isSubmitting ? 'SUBMITTING...' : 'SUBMIT'}
+          </button>
         </form>
       {:else}
         <div class="thank-you-message">
           <h3>Thank You!</h3>
-          <p>We'll be in touch shortly.</p>
-          <div class="thank-you-icon">✉</div>
+          <p>Your prayer commission request has been submitted successfully!</p>
+          {#if submissionId}
+            <p class="submission-id">Request ID: <strong>#{submissionId}</strong></p>
+          {/if}
+          <p>We'll be in touch shortly with payment instructions.</p>
+          <div class="thank-you-icon">✓</div>
+          
+          <button class="new-request-btn" on:click={resetForm}>
+            Submit Another Request
+          </button>
         </div>
       {/if}
     </div>
@@ -234,6 +270,15 @@ Submitted: ${new Date(submissionData.timestamp).toLocaleString()}`);
     border-radius: 8px;
   }
 
+  .error-message {
+    background-color: #ffebee;
+    color: #c62828;
+    padding: 1em;
+    border-radius: 4px;
+    margin-bottom: 1em;
+    border-left: 4px solid #c62828;
+  }
+
   .form-group {
     margin-bottom: 1.5em;
   }
@@ -314,8 +359,13 @@ Submitted: ${new Date(submissionData.timestamp).toLocaleString()}`);
     width: 100%;
   }
 
-  .submit-btn:hover {
+  .submit-btn:hover:not(:disabled) {
     background-color: #B22222;
+  }
+
+  .submit-btn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
   }
 
   .thank-you-message {
@@ -328,10 +378,36 @@ Submitted: ${new Date(submissionData.timestamp).toLocaleString()}`);
     margin-bottom: 1em;
   }
 
+  .submission-id {
+    background-color: #e8f5e8;
+    color: #2e7d32;
+    padding: 0.5em;
+    border-radius: 4px;
+    margin: 1em 0;
+    font-family: monospace;
+  }
+
   .thank-you-icon {
-    font-size: 3em;
-    color: #DC143C;
+    font-size: 4em;
+    color: #4caf50;
+    margin: 1em 0;
+    font-weight: bold;
+  }
+
+  .new-request-btn {
+    background-color: #666;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s;
     margin-top: 1em;
+  }
+
+  .new-request-btn:hover {
+    background-color: #555;
   }
 
   @media (max-width: 768px) {
